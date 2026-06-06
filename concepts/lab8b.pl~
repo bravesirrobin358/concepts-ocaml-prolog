@@ -1,0 +1,122 @@
+:- dynamic  grid/2.
+:- dynamic revealed_grid/3.
+:- dynamic flagged_grid/2.
+
+:- dynamic mines/2.
+
+fill_mines([]).
+fill_mines([H|T]):-
+    IntRem is div(H, 6),
+    Rem is mod(H,6),
+    assertz(mines(IntRem,Rem)),
+    fill_mines(T).
+
+fill_grid(37).
+
+fill_grid(Pos):-
+    IntRem is div(Pos, 6),
+    Rem is mod(Pos,6),
+    NextPos is Pos+1,
+    assertz(grid(IntRem,Rem)),
+    fill_mines(NextPos).
+
+new_game():-
+    randset(6,36,S),
+    abolish(grid/2),
+    abolish(revealed_grid/2),
+    abolish(flagged_grid/2),
+    abolish(mines/2),
+    fill_mines(S),
+    fill_grid(1),
+    print_grid().
+
+reveal_cell(Row,Col):-
+   mines(Row,Col),
+   retract(grid(Row,Col)),
+   assertz(revealed_grid(Row,Col,"*")),
+   print_grid(),
+   print("Mine Found! Game over"),!.
+
+reveal_cell(Row,Col):-
+    revealed_grid(Row,Col,_),
+    print("Cell already revealed").
+
+reveal_cell(Row,Col):-
+    flagged_grid(Row,Col),
+    print("Unflag cell first").
+
+reveal_cell(Row,Col):-
+    grid(Row,Col),
+    retract(grid(Row,Col)),
+    count_adjacents(Row,Col,N),
+    revealed_grid(Row,Col,N),
+    print_grid().
+
+reveal_cell(_,_):-
+    print("Invalid move").
+
+count_adjacents(-1,-1,0).
+
+count_adjacents(R,-1,N):-
+    R1 is R-1,
+    count_adjacents(R1,1,N).
+
+count_adjacents(R,C,N):-
+    mines(R,C),
+    N1 is N+1,
+    C1 is C-1,
+    count_adjacents(R,C1,N1).
+
+count_adjacents(R,C,N):-
+    C1 is C-1,
+    count_adjacents(R,C1,N).
+
+print_grid():-
+    get_grid(G,1,1),
+    print(6,G).
+
+get_grid([],7,_).
+
+get_grid(G,R,7):-
+    R1 is R+1,
+    get_grid(G,R1,1).
+
+get_grid(["?"|G],R,C):-
+    (grid(R,C);mines(R,C)),
+    C1 is C+1,
+    get_grid(G,R,C1).
+
+get_grid([N|G],R,C):-
+    revealed_grid(R,C,N),
+    C1 is C+1,
+    get_grid(G,R,C1).
+
+get_grid(["F"|G],R,C):-
+    flagged_grid(R,C),
+    C1 is C+1,
+    get_grid(G,R,C1).
+
+flag(R,C):-
+    grid(R,C),
+    retract(grid(R,C)),
+    assertz(flagged_grid(R,C)),
+    print_grid().
+
+flag(_,_):-
+    print("Invalid Move").
+
+unflag(R,C):-
+    flagged_grid(R,C),
+    retract(flagged_grid(R,C)),
+    assertz(grid(R,C)).
+
+unflag(_,_):-
+    print("Invalid Move").
+
+
+
+
+
+
+
+

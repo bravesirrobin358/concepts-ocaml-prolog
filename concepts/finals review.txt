@@ -1,0 +1,57 @@
+if()
+if()
+else()
+else refers to closest in java
+
+typeof same obj type
+kindof similar enough
+
+
+
+
+
+
+multiple inheritance:
+class inherits from multiple. languages that don't allow it often is to avoid collision (if super classes share an attribute or method signature).
+
+in java, else blocks correspond to the closest if block.
+
+in c++, you can force modify inherited attr visibility (ex: public to private)
+
+scope resolution: use :: to make private variables visible in global scope?
+
+ternary operator:  x = <cond>?<val if true>:<val if false>
+
+b=a+f(a)
+
+f(a) has sideeffect, changing the value, but if it's after, then you get 1 original and 1 altered
+
+solution: don't allow? force functions calls first?
+
+widening: from narrow to wide (child to parent)
+
+
+short-circuit evaluation:
+
+arithmetic:
+if outcome is clear, then don't continue (8*x)*[5*2]
+then if x=0, [5*2] won't be called bc 0 will be returned anyways
+operations with side effects will not be called if cut short
+
+logical:
+if outcome is clear, then don't continue (ex: true or (c==e))
+
+
+exportation in c++
+
+polymorphism: different shapes (behavior of method changes depends on the method)
+
+
+
+exam: 2 parts
+p1: short term question
+p2: longer term:
+BNF (not entire structue, 5-7 production rules ex:primitive types in Java, visibility)
+lab questions
+
+

@@ -1,0 +1,27 @@
+variables by lifetime:
+static: bound to memory before execution being and remains during execution.
+
+advantages: efficient
+con: no flexibility
+
+
+static scope: based on program text.
+
+search process: start local, then expand search scope until found.
+
+summary:
+-case sensitivity, keyword, reserved word
+-variables are characterized by:
+	name
+	address
+	value
+	type
+	lifetime
+	scope
+Binding is the association of attributes with
+program entities
+• Scalar variables are categorized as: static, stack
+dynamic, explicit heap dynamic, implicit heap
+dynamic
+• Strong typing means detecting all type errors
+

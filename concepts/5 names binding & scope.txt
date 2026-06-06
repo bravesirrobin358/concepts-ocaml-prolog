@@ -1,0 +1,40 @@
+- imperative languages are abstractions of von Neumann architecture
+-memory
+-processor
+
+are names case sensitive?
+
+Names
+	length
+
+special characters
+PHP: var names start w/ $
+Perl: var names start w/ special characters
+ruby: start w/ @ = instance vars, w/ @@ are class vars
+
+case sensitivity:
+disadvantage: readability (names that look
+alike are different)
+C-based: case sensitive
+C++,java & c# predefined names are mixed case (exceptions)
+
+special words:
+keywords: special in certain contexts
+reserved : special word not available for user-defined name
+can have too many reserved words!
+
+Variables can be characterized as a
+sextuple of attributes:
+– Name
+– Address
+– Value
+– Type
+– Lifetime
+– Scope
+
+
+binding associates an entity and an attribute
+binding time = time binding occurs
+compile time (c or java)
+load time (c / c++ static var)
+runtime nonstatic local var to memory cell

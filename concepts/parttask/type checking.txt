@@ -1,0 +1,71 @@
+Ass decription:
+Prepare a 10 minute recorded presentation on analysis of type checking in modern languages (i.e Java, C++, C#, Ruby, PhP, Ada, ..) Your presentation should investigate type checking in depth, and demonstrate type checking live using a wide variety of data types, including data types discussed in class.
+
+
+Intro: 
+What is Type checking?
+Type checking is the operation programming languages perform  to ensure that expressions, methods, functions are using acceptable data types (2 vars in + operation good vs bad). Depending on the language, adding 2 variables can result in a compilation error, not even permitting you to run it, like this floor function's double output is being assigned to an Int variable. It could also be an issue that gets detected during runtime, like here where we're trying to add, or rather concat a boolean to a string, and in some cases type coercion will do some of the work for you and ensure type correctness at runtime, dynamically fixing the operation like this Int to double. 
+Type checking is performed and implemented in a number of ways, so let's talk about those uses in modern languages.
+
+(slide change)
+
+Java is a statically typed language.
+What this means is that the compiler will make sure that the variables used in operations are valid during compilation, and will not compile if type mismatches are detected. In addition, Java being static means that variables cannot change, meaning be assigned a value of a different type during its runtime, and that variables need to be given an explicit data type for the compiler to use. So while you can set an integer variable a new integer value as many times as you want, you wouldn't be able to assign it a double.
+
+Arrays are a bit more complicated, but work largely the same way. So if you declare the array, and then initialize it as an array with 4 elements, you can later initialize it as an array of 5 elements. The important part is that the type of value contained in each item of the arrays are the same, meaning in this case they are both integer arrays first and foremost.
+
+Functions also need to specify what data types each argument is, as well as the output data type of that function.
+
+With all that being said, Java is not that simple.
+
+(slide change)
+
+First, there's type coercion. Type coercion is basically a shortcut for a language saying that operations may not be using quite the intended data types, but the types chosen in that instance are deemed acceptable, and the language automatically casts the data type so that the operation can continue, because the intent of the statement is clear. In this example, even though the floor function typically expects a double and not an integer like we've provided, because integers can be safely cast to a double with no confusion or data lost, by simply stating it has 0 decimals, Java is willing to cast it and allow the compilation. The line right after does something similar, casting the double 'a' to a string to conatenate the string for the printing, which outputs 4.0 since remember, it was a double before this. Widening, such as arithmetics operations between an int and a long or a float is another common coercion.
+
+(slide change)
+
+In another, more strict language like Ada, even these simple coercions are not permitted, requiring explicit casting so that both values are of the same type. See this example where division between an integer and a float requires casting. It's to reduce the amount of assumptions the program has to make, and the IDE will tell in detail where the type checking has spotted an issue.
+
+A particular area of interest is Java's OOP support. 
+
+(slide change)
+
+
+If a class is a child of another, that is to say inherited, you can declare a variable as an object of the parent class, and then initialize it in a subclass. In this way, you are saying that this new object 'is a' parent class, so in this example, you'd say the new Triangle object is a Shape, and thus can initialize the shape variable as a triangle. 
+This is also the case with array initialization with child classes, but generics like ArrayLists do not like this.
+
+But in the Triangle class we also have overwritten the Shape's doThing method (which just prints the method name and object type), and thus triangle objects execute Triangle's doThing method. In this example, the shape object is initalized and shape's dothing method is called, then the triangle initalization and call are performed. So this is a manner in which Java technically allows a variable to change data type during runtime, though as you can see it's quite limited.
+
+There are several instances where this inheritance can actually fool the static checking into thinking there's a problem when there in fact isn't.
+
+(slide change)
+
+In the parent class Shape, we have this type method that simply returns the object calling it. Because it's defined in the Shape class, it should return a Shape. But in the inherited class Triangle, the compiler detects this method usage as returning a shape, so if you have that returned object call a method only available to the child class, and thus not available to Shape objects, it will complain the method doesn't exist as 'cannot find symbol' for the doOtherThing method for the type Class.
+
+So if we add that method's implementation to the parent class, the compiler will no longer complain that it doesn't exist, but in practice, we can see that the child class's method was the one that would have been used all along, as shown by the print outputs, only the first is done as type Shape.
+
+(change slide)
+
+Now C# and Java have a lot of similarities, but they're by no means 1-to-1, even in type checking. An example of this is generics. In Java, generics like List implementations don't keep the generic's implementation type during runtime, so in Java, if you have an ArrayList of shape, during runtime it'd be simply considered a ArrayList. This is not so in C#, getting the name directly isn't all that indicative, but you can still do type comparisons and use this getType followed by getGenericsArguments methods to get the type used for the generic type.
+
+(slide change)
+
+Some other languages have another way of denoting equivalence, called structural equivalence. In a language such as Golang, several data types can be considered equivalent if their structure are the same. For example, if you have 2 structs with the same attributes, and in the same order, you can perform select methods on both of them, even though you may not consider them to be the same. Among others, this includes comparisons (though not if they are both named, so using an unamed struct here works). Assignments aren't exactly permitted since they are still considered different types with a different name, but they do allow for castings that don't require manual implementations. Arrays in golang, not being a named type either, are equivalent if their value type and length are the same. Their values being different would return false from a comparison, but a different length or type altogether would cause a compile error, because they are not structurally equivalent. Popular languages offer structural typing in some contexts, but it is fairly uncommon for it to be the main design.
+
+(slide change)
+
+
+But even Golang is a statically typed-language, but not all languages are: Python remains as a dynamically typed language. What that means is that unlike statically typed languages, variables don't need to have an explicitely set type, can be given values of different types throughout its execution, and not just in more fringe cases like in the inheritance example earlier. Being an interpretive language means Python doesn't compile its code beforehand, so that must mean that Python will only ever perform type checking on the code as it gets executed. Incidentally, this means that if a function or some other code would raise a TypeError but is never called, then no error will be thrown. 
+
+(slide change)
+
+But Python does have annotations for type hints. These can be used for variables, and functions's parameters and outputs. They function similarly to the type declarations as seen earlier in Java, but matching the dynamic typing, are generally looser as well. For example, a list of integers can be hinted to be exactly, that, or more broadly as just a list, though usage of the mypy library will require more string hints. In addition, unions are also available, meaning an input is considered acceptable if it corresponds to any of the types in that union. Wrapping the type in with Optional means that None, Python's null equivalent, is also a permitted value. Python's tuples can effectively be used to return multiples outputs, and these can be reflected in the hints as well. 
+
+(slide change)
+
+The important thing to remember about the usage of these type hints is that they aren't actual static checking, running the file will be done just the same, even if the type hints suggests otherwise. They mostly serve as pseudo documentation, helping to more succintly describe the functions and variables, and IDEs like Pycharm will point out noticable occasions where a runtime TypeError could happen, supporting the development process. Like in this example, the 'test' function has a string argument, and a second one that's either a list of strings, or a dictionary with integers, and it outputs an integer. The function itself with these hints are incoherent, but the issues shown here also seem to assume everything beforehand is correct, such as the assumption that the concatenation of 2 strings would return a string, conflicting with the stated output of integer. But even then, the string concatenation expects a second string and not a union of a list or a dict of ints. The call to this function is passing integers, conflicting with both argument types, but when running the file, no errors actually occur. 
+
+(slide change)
+
+that is all for my presentation, and thanks for watching.  
+

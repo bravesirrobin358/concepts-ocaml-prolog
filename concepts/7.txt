@@ -1,0 +1,9 @@
+take home, open book
+
+contents:
+up to ch6
+
+BNF in class
+
+dev BNF, use BNF, criticize, valid & invalid
+

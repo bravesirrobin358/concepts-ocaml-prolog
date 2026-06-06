@@ -1,0 +1,35 @@
+:- dynamic book/4.
+:- dynamic borrowed/4.
+
+add_book(Title, Author, Year, Genre):-
+    not(is_available(Title, Author, Year, Genre)),
+    assertz(book(Title, Author, Year, Genre)).
+
+remove_book(Title, Author, Year, Genre):-
+    retract(book(Title,Author, Year, Genre)).
+
+is_available(Title, Author, Year, Genre):-
+    book(Title, Author, Year, Genre),
+    not(borrowed(Title,Author,Year,Genre)).
+
+borrow_book(Title,Author,Year,Genre):-
+    is_available(Title, Author, Year, Genre),
+    assertz(borrowed(Title,Author,Year,Genre)),
+    retract(book(Title,Author,Year,Genre)).
+
+return_book(Title,Author,Year,Genre):-
+    retract(borrowed(Title,Author,Year,Genre)),
+    assertz(book(Title,Author,Year,Genre)).
+
+
+find_by_author(Auth,B):-
+    setof(Title, book(Title,Auth,_,_),B).
+
+find_by_genre(Genre,B):-
+    setof(Title, book(Title,_,_,Genre),B).
+
+find_by_year(Year,B):-
+    setof(Title, book(Title,_,Year,_),B).
+
+
+

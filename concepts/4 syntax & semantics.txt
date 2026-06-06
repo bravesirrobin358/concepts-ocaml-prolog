@@ -1,0 +1,17 @@
+PRGM -> 1+ CLASS
+CLASS -> "{" DATA METHOD "}"
+DATA -> INT
+INT -> VISIBILITY TYPE INITIALIZATION ";"
+
+VIS -> 'public' | 'private'
+TYPE -> int | ...
+INIT -> "=" DIG
+DIG -> "1" | "2" | "3" ... | "9"
+
+{ public int = 4;}
+derived as single long string
+
++
+*
+[] optional;
+

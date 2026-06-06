@@ -1,0 +1,11 @@
+1.Factorial with Tail Recursion and Accumulators:
+	Accumulator: The accumulator is used to store the output at each step (from largest to smallest), and this value is then passed to the next call. The call being the last procedure makes it tail recursive.
+	Input validation: The first definition of factorial (which means it gets checked before other predicates) compares the type of the 1st input and whether it's smaller than 0, in that order, setting the result to the error message if either condition is true. This ensures no negative or non-integers get through, and that the conditions are applied correctly.
+
+2.Filtering Elements Based on Multiple Conditions:
+	Dynamic conditions: greater_than is simple, just represent the condition with the '<' symbol. multiple_of also simply uses the mod operator and checks if the result is equal to 0 (indicating a number divides the other).
+	Recursive Logic: For each item in the list, it passes it to a works predicate. This works predicate iterates through each condition (used with the call predicat), and ultimately returns true if all conditions have been met. If this is successful, it calls filter_list with the tail to try with the remaining items, and adds the head to the output list. Once there are no more items, it sets the output list as an empty for all the other items to add to, and cuts so that the first solution is the only one kept.
+
+3.Finding the Second Maximum Element:
+	Handling duplicates: Interestingly, prolog's sort predicate not only sorts the list as expected, but also removes all duplicates, speeding up the process I had in mind already.
+	Error handling: Because the list has its duplicates removed, we know the list's size is the same as the number of unique elements. We can then check that the list with no duplicates has at least 2 elements, returning the error message otherwise
