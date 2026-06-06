@@ -1,0 +1,127 @@
+type job = {
+    start_time : int;
+    duration : int;
+    priority : int;
+};;
+
+(*  converting time to minutes *)
+let time_to_minutes m h = h*60+m;;
+let minutes_from_time time = time mod 60;;
+let hour_from_time time = (time - (minutes_from_time time))/60;;
+let print_time time =
+    print_int (hour_from_time time);
+    print_string ":";
+    Printf.printf "%02d" (minutes_from_time time);;
+
+(* Speaking of time, interogation time *)
+let ask_int question = print_string question; read_int();;
+let ask_time () =
+    print_endline "Time (24 hour notation):";
+    (time_to_minutes (ask_int "minute: ") (ask_int "hour: "));;
+
+let read_job () = {
+    start_time=(ask_time());
+    duration=(ask_int "Job duration (minutes)?: ");
+    priority=(ask_int "Job priority?: ");
+    };;
+
+let rec read_jobs how_many cur_jobs =
+    print_endline "";
+    if how_many > 0 then
+        read_jobs (how_many-1) (List.append [read_job()] cur_jobs)
+    else
+        cur_jobs;;
+
+let get_jobbin() = read_jobs (ask_int "How many jobs we doin'?:") [];;
+
+(* Pretty printing for brainlets who cant read one big number *)
+let print_job job = print_string "Job of priority ";
+                    Printf.printf "%d" job.priority;
+                    print_string " starting at ";
+                    print_time job.start_time;
+                    print_string " until ";
+                    print_time (job.start_time + job.duration);
+                    print_endline "";;
+
+let rec print_schedule jobs = match jobs with 
+    | [] -> []
+    | h::ht -> print_job h; print_schedule ht;;
+
+(* Comparison functions used for sorting in the different scheduling strategies *)
+let compare_st_time j1 j2 = compare j1.start_time j2.start_time;;
+let compare_priority j1 j2 = compare j2.priority j1.priority;;
+let compare_duration j1 j2 = compare j2.duration j1.duration;;
+
+(* Boolean function denoting if 2 jobs will overlap, creating a conflict*)
+let conflict_exists j1 j2 =
+(j1.start_time <= j2.start_time && j2.start_time <= j1.start_time + j1.duration) ||
+(j2.start_time <= j1.start_time && j1.start_time <= j2.start_time + j2.duration);;
+
+(* Boolean function denoting whethr the new job conflicts with any in the schedule *)
+let rec any_conflict j jlist = match jlist with
+| [] -> false (* Base case meaning there's no more jobs to check for conflicts, 
+so return false*)
+| hd :: tl -> if conflict_exists j hd then true else (any_conflict j tl);;
+(* If there are jobs left, return true if there is a conflict with the head of 
+  the job list. If not, try again with the rest of the jobs*)
+
+(* Puts together the schedule, returning it as 'out_list'*)
+let rec schedule st_sorted_jobs out_list = match st_sorted_jobs with
+| [] -> out_list (*Base case: No more jobs to attempting scheduling, so return 
+the schedule 'out_list'*)
+| hd :: tl -> if any_conflict hd out_list then 
+  schedule tl out_list
+(*Otherwise, attempt to schedule the job. If a conflict is found, ignore the job
+and try scheduling the next job*)
+else schedule tl (List.append out_list [hd]);;
+(* If there is no conflict, add the job to the schedule 'out_list', and proceed
+to schedule the next job*)
+
+(*These are wrappers representing the different job strategies that get
+called when selected*)
+let no_overlap job_list =
+  (schedule (List.sort compare_st_time job_list) []);;
+let max_priority job_list =
+  (schedule (List.sort compare_priority job_list) []);;
+let min_idle_time job_list = 
+  (schedule (List.sort compare_duration job_list) []);;
+
+(* Associates the option chosen to its corresponding scheduling strategy,
+returning the completed schedule*)
+let do_schedule_strat job_list option =
+  if option = 1 then
+    (no_overlap job_list)
+  else if option = 2 then 
+    (max_priority job_list)
+  else
+    (min_idle_time job_list);;
+
+(*Keeps calling the function and prompting the user for an input 
+until the user enters 1 of the accepted options, returning it*)
+let rec enter_in choice acceptable_choices message =
+  if (List.for_all (fun x -> x <> choice) acceptable_choices) then
+    enter_in (ask_int message) acceptable_choices message
+  else
+    choice;;
+
+(*Jobs for test cases*)
+(* let test_j1 = {start_time=300; duration=120; priority=5};;
+let test_j2 = {start_time=360; duration=300; priority=1};;
+let test_j3 = {start_time=540; duration=120; priority=3};;
+let test_j4 = {start_time=720; duration=180; priority=2};;
+let test_j5 = {start_time=720; duration=120; priority=3};;
+let test_j6 = {start_time=780; duration=60; priority=4};; *)
+(*enter_in 0 [1;2;3] "Choose a scheduling strategy (1 for No Overlaps, 2 for Max Priority, 3 for Minimize Idle Time): 1";;*)
+(* let sorted_jobs = (do_schedule_strat [test_j3;test_j2;test_j1;test_j4;test_j5;test_j6] 3);;
+print_schedule sorted_jobs;; *)
+(*get_jobbin()*)
+
+
+(* Main function *)
+let main () =
+  let job_list = get_jobbin() in
+  let option = enter_in (ask_int "Choose a scheduling strategy (1 for No Overlaps, 2 for Max Priority, 3 for Minimize Idle Time): ") [1;2;3] "Choose a scheduling strategy (1 for No Overlaps, 2 for Max Priority, 3 for Minimize Idle Time): " in
+  let sorted_jobs = (do_schedule_strat job_list option) in
+  print_schedule sorted_jobs;;
+
+main();;
